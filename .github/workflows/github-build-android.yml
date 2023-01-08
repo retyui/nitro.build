@@ -15,6 +15,11 @@ jobs:
           key: ${{ runner.os }}-gradle-caches-${{ hashFiles('**/*.gradle') }}
           restore-keys: ${{ runner.os }}-gradle-caches-
       - uses: actions/cache@v3
+        with:
+          path: /tmp/metro-cache
+          key: ${{ runner.os }}-metro-${{ hashFiles('./yarn.lock') }}
+          restore-keys: ${{ runner.os }}-metro-
+      - uses: actions/cache@v3
         id: node_cache
         with:
           path: node_modules
