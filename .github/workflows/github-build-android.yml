@@ -21,7 +21,7 @@ jobs:
           key: ${{ runner.os }}-yarn-${{ hashFiles('./yarn.lock') }}
       - run: yarn install --frozen-lockfile
         if: steps.node_cache.outputs.cache-hit != 'true'
-      - run: ./gradlew assembleRelease -PreactNativeArchitectures=arm64-v8a --no-daemon
+      - run: ./gradlew assembleRelease -PreactNativeArchitectures=arm64-v8a --init-script ci_init.gradle --no-daemon
         working-directory: ./android
       - uses: actions/upload-artifact@v3
         with:
