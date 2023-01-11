@@ -6,6 +6,13 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Extract './android' & './yarn.lock' hashes
+        id: hash
+        run: |
+          echo "ANDROID_DIR=$(git rev-parse HEAD:android)"      >> $GITHUB_OUTPUT
+          echo "YARN_LOCK_FILE=$(git rev-parse HEAD:yarn.lock)" >> $GITHUB_OUTPUT
+  
+
       - name: Gradle wrapper cache
         uses: actions/cache@v3
         with:
@@ -37,7 +44,25 @@ jobs:
         run: yarn install --frozen-lockfile
         if: steps.node_cache.outputs.cache-hit != 'true'
 
-      - name: Build arm64-v8a APK
+      - name: Android Build Cache
+        uses: actions/cache@v3
+        id: android_build_cache
+        with:
+          path: |
+            ./android/app/build
+            ~/.android/build-cache/
+          key: ${{ runner.os }}-android-build-v1-${{ steps.hash.outputs.ANDROID_DIR }}-${{ steps.hash.outputs.YARN_LOCK_FILE }}
+          restore-keys: ${{ runner.os }}-metro-
+
+      - name: Build arm64-v8a APK (cache, JS only)
+        working-directory: ./android
+        if: steps.android_build_cache.outputs.cache-hit == 'true'
+        run: |
+          ./gradlew createBundleReleaseJsAndAssets mergeReleaseAssets
+          ./gradlew packageRelease -x createBundleReleaseJsAndAssets -x mergeReleaseAssets
+
+      - name: Build arm64-v8a APK (no cache, Native + JS)
+        if: steps.android_build_cache.outputs.cache-hit != 'true'
         run: ./gradlew assembleRelease -PreactNativeArchitectures=arm64-v8a --init-script ci_init.gradle --no-daemon
         working-directory: ./android
 
