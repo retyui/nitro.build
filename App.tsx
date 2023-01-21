@@ -9,7 +9,7 @@ import {
   useColorScheme,
   View,
 } from 'react-native';
-
+// js
 import {
   Colors,
   DebugInstructions,
