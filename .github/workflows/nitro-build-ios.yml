@@ -7,8 +7,13 @@ jobs:
       NITRO_API_KEY: ${{ secrets.NITRO_API_KEY }}
     steps:
       - uses: actions/checkout@v3
-      - uses: nitro-build/github-action-nitro-ios@v1
+      - uses: nitro-build/github-action-nitro-ios@master
         id: nitro
       - uses: actions/upload-artifact@v3
         with:
           path: ${{ steps.nitro.outputs.nitro-output-dir }}
+          certificate-base64: ${{ secrets.IOS_DISTRIBUTION_CERTIFICATE_BASE64 }}
+          certificate-passphrase: ${{ secrets.IOS_DISTRIBUTION_CERTIFICATE_PASSWORD }}
+          codesigning-identity: Davyd Narbutovich (ZXB65YLHFM)
+          provisioning-profiles-base64: ${{ secrets.IOS_ADHOC_PROVISIONING_PROFILE_BASE64 }}
+          provisioning-profile-specifier: github actions
