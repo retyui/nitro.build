@@ -7,7 +7,7 @@ jobs:
       NITRO_API_KEY: ${{ secrets.NITRO_API_KEY }}
     steps:
       - uses: actions/checkout@v3
-      - uses: nitro-build/github-action-nitro-ios@master
+      - uses: nitro-build/github-action-nitro-ios@v1
         id: nitro
       - uses: actions/upload-artifact@v3
         with:
