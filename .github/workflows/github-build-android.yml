@@ -2,6 +2,7 @@ name: github-build-android
 on: [push]
 jobs:
   build:
+    name: Android Github build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -27,7 +28,9 @@ jobs:
           key: ${{ runner.os }}-yarn-${{ hashFiles('./yarn.lock') }}
 
       - name: Install node_modules
-        run: yarn install --frozen-lockfile
+        run: |
+          yarn install --frozen-lockfile
+          npx envinfo
         if: steps.node_cache.outputs.cache-hit != 'true'
 
 

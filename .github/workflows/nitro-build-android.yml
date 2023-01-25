@@ -2,6 +2,7 @@ name: nitro-build-android
 on: [push]
 jobs:
   build:
+    name: Android Nitro build
     runs-on: ubuntu-latest
     env:
       NITRO_API_KEY: ${{ secrets.NITRO_API_KEY }}
@@ -12,3 +13,6 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           path: ${{ steps.nitro.outputs.nitro-output-dir }}
+          pre-build-command: npx envinfo
+          pre-install-command: npx envinfo
+          post-build-command: npx envinfo
