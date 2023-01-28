@@ -1,0 +1,9 @@
+appId: com.nitrobuildpoc
+---
+- launchApp
+- tapOn: "Enter your email"
+- inputText: test@test.com
+- tapOn: "Enter your password"
+- inputText: 123456
+- tapOn: "SIGN IN"
+- assertVisible: "Hi, test@test.com!"

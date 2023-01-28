@@ -35,10 +35,30 @@ jobs:
 
 
       - name: Build arm64-v8a APK
-        run: ./gradlew assembleRelease -PreactNativeArchitectures=arm64-v8a --init-script ci_init.gradle --no-daemon
+        run: ./gradlew assembleRelease -PreactNativeArchitectures=arm64-v8a,x86_64 --init-script ci_init.gradle --no-daemon
         working-directory: ./android
 
       - name: Upload apk
         uses: actions/upload-artifact@v3
         with:
+          name: app-release
           path: ./android/app/build/outputs/apk/release/app-release.apk
+  e2e:
+    name: Android Github E2E
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/download-artifact@v3
+        with:
+          name: app-release
+      - name: Display structure of downloaded files
+        run: ls -R
+      - uses: mobile-dev-inc/action-maestro-cloud@v1.2.3
+        with:
+          api-key: ${{ secrets.MAESTRO_CLOUD_API_KEY }}
+          app-file: app-release.apk
+          android-api-level: 33
+          env: |
+            USERNAME=test@test.com
+            PASSWORD=123456
